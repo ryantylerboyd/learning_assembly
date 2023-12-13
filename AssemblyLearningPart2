@@ -1,0 +1,172 @@
+mov eax,Y ; move Y to the EAX register
+add eax,4 ; add 4 to the EAX register
+mov ebx,3 ; move 3 to the EBX register
+imul ebx ; multiply EAX by EBX
+mov X,eax ; move EAX to X
+
+(
+Registers
+are named storage locations in the CPU that hold intermediate results of operations.)
+The point in this example is not to claim that C++ is superior to assembly language or vice versa,
+but to show their relationship.
+
+The basic storage unit for all data in an x86 computer is a byte, containing 8 bits. Other
+storage sizes are word (2 bytes), doubleword (4 bytes), and quadword (8 bytes). In the following
+figure, the number of bits is shown for each size:
+
+DEFINITIONS
+Acharacter constant is a single character enclosed in single or double quotes. ~ 'A' "B"
+Embedded quotes are permitted when used in the manner shown by the following examples: ~ "This isn't a test" ~'Say "Good night," Gracie'
+NOT
+AND
+OR
+
+
+EAX, EBX, EC, EDX, EBP, ESP, ESI, EDI
+
+EFLAGS
+EIP
+CS ~ 16BIT ~ CODE SEGMENT
+SS ~ 16BIT ~ STACK SEGMENT
+DS ~ 16BIT ~ DATA SEGMENT
+ES ~ 16BIT
+FS ~ 16BIT
+GS ~ 16BIT
+
+[EAX] - [AX] | [AH][AL] ~ MULTIPLICATION AND DIVISION
+[EBX] - [BX] | [BH][BL] ~ 
+[ECX] - [CX] | [CH][CL]
+[EDX] - [DX] | [DH][DL]
+
+[ESI] - [SI] ~ SOURCE INDEX
+[EDI] - [DI] ~ DESTINATION INDEX
+[EBP] - [BP] ~ EXTENDED FRAME POINTER REGISTER
+[ESP] - [SP] ~ EXTENDED STACK POINTER REGISTER
+
+[EIP] ~ NEXT INSTRUCTION TO BE EXICUTED
+
+[EFLAGS] 
+
+[MOV] ~ MOVE ONE VALUE TO ANOTHER ~ mov count,ebx ; move EBX to count
+[ADD] ~ ADD TWO VALUES
+[SUB] ~ SUBTRACT ON VALUE FROM ANOTHER
+[MUL] ~ mULTIPLY TWO VALUES
+[JMP] ~ JUMP TO A NEW LOCATION
+[CALL] ~ CALL A PROCEDURE
+
+[INC] ~ ADD ONE TO THE VALUE ~ inc eax ; add 1 to EAX
+[IMUL] ~ DESTINATION, SOURCE, OPERAND ~ imul eax,ebx,5 ~|~ EBX is multiplied by 5, and the product is stored in the EAX register.
+COMMENT
+COMMENT !
+This line is a comment.
+This line is also a comment.
+!
+
+[BYTE] ~ 8-bit unsigned integer. B stands for byte
+[SBYTE] ~ 8-bit signed integer. S stands for signed
+[WORD] ~ 16-bit unsigned integer (can also be a Near pointer in real-address mode)
+[SWORD] ~ 16-bit signed integer
+[DWORD] ~ 32-bit unsigned integer (can also be a Near pointer in protected mode). D stands for double
+[SDWORD] ~ 32-bit signed integer. SD stands for signed double
+[FWORD] ~ 48-bit integer (Far pointer in protected mode)
+[QWORD] ~ 64-bit integer. Q stands for quad
+[TBYTE] ~ 80-bit (10-byte) integer. T stands for Ten-byte
+[REAL4] ~ 32-bit (4-byte) IEEE short real
+[REAL8] ~ 64-bit (8-byte) IEEE long real
+[REAL10] ~ 80-bit (10-byte) IEEE extended real
+
+[DB] ~ 8-bit integer
+[DW] ~ 16-bit integer
+[DD] ~ 32-bit integer or real
+[DQ] ~ 64-bit integer or real
+[DT] ~ define 80-bit (10-byte) integer
+
+[?] ~ VALUE ASSIGNED DURING RUNTIME ~ VALUE6 BYTE ?
+
+[DUP] ~ ALLOCATING SPACE FOR A STRING OR ARRAY
+
+
+[.DATA] ~ VARIABLES
+[.CODE] ~ CONTAINS EXECUTABLE INSTRUCTIONS
+[.STACK] ~ AREA OF A PROGRAM HOLDING THE RUNTIME STACK SETTING ITS SIZE ~ .STACK 100H
+
+Label (optional)
+Instruction mnemonic (required)
+Operand(s) (usually required)
+Comment (optional)
+[label:] mnemonic [operands] [;comment]
+
+
+PAGE 59 EXAMPLE 1
+main PROC
+mov eax,5 ; move 5 to the EAX register
+add eax,6 ; add 6 to the EAX register
+call WriteInt ; display value in EAX
+exit ; quit
+main ENDP
+
+PAGE 62 EXAMPLE 2
+myVar DWORD 26 ; DWORD directive
+mov eax,myVar ; MOV instruction
+
+PAGE 64 CODE LABEL EXAMPLE 3
+target:
+mov ax,bx
+...
+jmp target
+
+PAGE 66 EXAMPLE 3
+TITLE Add and Subtract (AddSub.asm)
+; This program adds and subtracts 32-bit integers.
+INCLUDE Irvine32.inc
+.code
+main PROC
+mov eax,10000h ; EAX = 10000h
+add eax,40000h ; EAX = 50000h
+sub eax,20000h ; EAX = 30000h
+call DumpRegs ; display registers
+exit
+main ENDP
+
+PAGE 80 EXAMPLE 4
+To define a string of characters, enclose them in single or double quotation marks. The most
+common type of string ends with a null byte (containing 0). Called a null-terminated string,
+strings of this type are used in many programming languages:
+
+greeting1 BYTE "Good afternoon",0
+greeting2 BYTE 'Good night',0
+
+greeting1 BYTE "Welcome to the Encryption Demo program "
+BYTE "created by Kip Irvine.",0dh,0ah
+BYTE "If you wish to modify this program, please "
+BYTE "send me a copy.",0dh,0ah,0
+
+The hexadecimal codes 0Dh and 0Ah are alternately called CR/LF (carriage-return line-feed)
+or end-of-line characters. When written to standard output, they move the cursor to the left column
+of the line following the current line.
+
+PAGE 80 EXAMPLE 5
+BYTE 20 DUP(0) ; 20 bytes, all equal to zero
+BYTE 20 DUP(?) ; 20 bytes, uninitialized
+BYTE 4 DUP("STACK") ; 20 bytes: "STACKSTACKSTACKSTACK"
+The WORD (define word) and SWORD (define signed word) directives create storage for one or
+more 16-bit integers:
+
+word1 WORD 65535 ; largest unsigned value
+word2 SWORD -32768 ; smallest signed value
+word3 WORD ? ; uninitialized, unsigned
+
+The legacy DW directive can also be used:
+
+val1 DW 65535 ; unsigned
+val2 DW -32768 ; signed
+
+The DWORD (define doubleword) and SDWORD (define signed doubleword) directives allocate
+storage for one or more 32-bit integers:
+val1 DWORD 12345678h ; unsigned
+val2 SDWORD −2147483648 ; signed
+val3 DWORD 20 DUP(?) ; unsigned array
+
+PAGE 88 EXAMPLE 6
+list WORD 1000h,2000h,3000h,4000h
+ListSize = ($ − list) / 2
